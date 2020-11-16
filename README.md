@@ -1,8 +1,9 @@
 # Crossstitch
 
 Crossstitch is a [Fabric](https://fabricmc.net/) mod designed to improve compatibility with Fabric
-mods and the Minecraft proxy [Velocity](https://velocitypowered.com/). This mod is supported by the
-Velocity team.
+mods and Minecraft proxies such as  [Velocity](https://velocitypowered.com/). This mod is supported
+by the Velocity team and is developed against Velocity, but the principles used are intended to be
+generic enough to apply to any Minecraft proxy.
 
 ## Installation
 
