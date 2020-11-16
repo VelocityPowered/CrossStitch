@@ -18,7 +18,7 @@ import java.util.Map;
 
 @Mixin(CommandTreeS2CPacket.class)
 public class CommandTreeSerializationMixin {
-    private static final Identifier MOD_ARGUMENT_INDICATOR = new Identifier("velocity:mod_argument");
+    private static final Identifier MOD_ARGUMENT_INDICATOR = new Identifier("crossstitch:mod_argument");
 
     @Inject(cancellable = true, method = "writeNode", at = @At(value = "INVOKE", target = "Lnet/minecraft/command/argument/ArgumentTypes;toPacket(Lnet/minecraft/network/PacketByteBuf;Lcom/mojang/brigadier/arguments/ArgumentType;)V"))
     private static void writeNode$wrapInVelocityModArgument(PacketByteBuf packetByteBuf, CommandNode<CommandSource> commandNode, Map<CommandNode<CommandSource>, Integer> map, CallbackInfo ci) {
