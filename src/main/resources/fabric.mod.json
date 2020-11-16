@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "crossstitch",
   "version": "${version}",
-  "name": "Crossstitch",
+  "name": "CrossStitch",
   "description": "A Fabric mod that provides enhanced support for Minecraft proxies.",
   "authors": [
     "Andrew Steinborn",
