@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "crossstitch",
+  "version": "${version}",
+  "name": "Crossstitch",
+  "description": "A Fabric mod that provides enhanced support for Minecraft proxies.",
+  "authors": [
+    "Andrew Steinborn",
+    "Velocity Contributors"
+  ],
+  "contact": {
+    "website": "https://velocitypowered.com"
+  },
+  "license": "MIT",
+  "icon": "assets/crossstitch/icon.png",
+  "environment": "server",
+  "entrypoints": {
+    "main": [
+      "com.velocitypowered.crossstitch.CrossStitch"
+    ]
+  },
+  "mixins": [
+    "crossstitch.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.10.8",
+    "minecraft": "1.16.4"
+  },
+  "accessWidener": "crossstitch.accesswidener"
+}
