@@ -1,13 +1,14 @@
 # Crossstitch
 
-Crossstitch is a [Fabric](https://fabricmc.net/) mod designed to improve compatibility with Fabric
-mods and Minecraft proxies such as  [Velocity](https://velocitypowered.com/). This mod is supported
-by the Velocity team and is developed against Velocity, but the principles used are intended to be
-generic enough to apply to any Minecraft proxy.
+Crossstitch is a Minecraft mod designed to improve Minecraft proxy compatibility with other Minecraft mods.
+This mod is supported by the [Velocity](https://velocitypowered.com/) team and is developed against Velocity
+and Fabric, but the principles used are intended to be generic enough to apply to any Minecraft proxy and to
+any Minecraft modding platform. (Once we have modern Forge support in Velocity, for instance, we'll have a version
+for Forge, for instance.)
 
 ## Installation
 
-Crossstitch only needs to be installed on the Fabric server itself - Velocity supports Crosstitch as
+Crossstitch needs to be installed on the Fabric server itself - Velocity supports Crosstitch as
 of Velocity 1.1.2.
 
 Once installed, make sure to only use Velocity to connect to your server, as Crossstitch isn't available
