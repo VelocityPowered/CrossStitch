@@ -14,11 +14,6 @@
   "license": "MIT",
   "icon": "assets/crossstitch/icon.png",
   "environment": "server",
-  "entrypoints": {
-    "main": [
-      "com.velocitypowered.crossstitch.CrossStitch"
-    ]
-  },
   "mixins": [
     "crossstitch.mixins.json"
   ],
