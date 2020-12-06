@@ -8,6 +8,9 @@ for Forge, for instance.)
 
 ## Installation
 
+Download the mod from [CurseForge](https://www.curseforge.com/minecraft/mc-mods/crossstitch) or from
+the releases section here.
+
 CrossStitch needs to be installed on the Fabric server itself - Velocity supports CrossStitch as
 of Velocity 1.1.2.
 
