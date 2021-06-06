@@ -19,7 +19,7 @@
   ],
   "depends": {
     "fabricloader": ">=0.10.8",
-    "minecraft": "1.16.x"
+    "minecraft": ">=1.16"
   },
   "accessWidener": "crossstitch.accesswidener"
 }
