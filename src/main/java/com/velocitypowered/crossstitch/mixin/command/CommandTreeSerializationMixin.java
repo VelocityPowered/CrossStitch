@@ -16,9 +16,14 @@ public class CommandTreeSerializationMixin {
 
     @Redirect(method = "writeNode", at = @At(value = "INVOKE", target = "Lnet/minecraft/command/argument/ArgumentTypes;toPacket(Lnet/minecraft/network/PacketByteBuf;Lcom/mojang/brigadier/arguments/ArgumentType;)V"))
     private static void writeNode$wrapInVelocityModArgument(PacketByteBuf packetByteBuf, ArgumentType<?> type) {
-        ArgumentTypes.Entry<?> entry = ArgumentTypes.classMap.get(type.getClass());
-        if (entry == null || entry.id.getNamespace().equals("minecraft") || entry.id.getNamespace().equals("brigadier")) {
+        ArgumentTypes.Entry entry = ArgumentTypes.classMap.get(type.getClass());
+        if (entry == null) {
             packetByteBuf.writeIdentifier(new Identifier(""));
+            return;
+        }
+        if (entry.id.getNamespace().equals("minecraft") || entry.id.getNamespace().equals("brigadier")) {
+            packetByteBuf.writeIdentifier(entry.id);
+            entry.serializer.toPacket(type, packetByteBuf);
             return;
         }
 
