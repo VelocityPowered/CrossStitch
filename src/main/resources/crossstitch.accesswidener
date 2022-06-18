@@ -1,4 +1,0 @@
-accessWidener v1 named
-
-accessible class net/minecraft/command/argument/ArgumentTypes$Entry
-accessible field net/minecraft/command/argument/ArgumentTypes classMap Ljava/util/Map;

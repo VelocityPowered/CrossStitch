@@ -2,42 +2,49 @@ package com.velocitypowered.crossstitch.mixin.command;
 
 import com.mojang.brigadier.arguments.ArgumentType;
 import io.netty.buffer.Unpooled;
-import net.minecraft.command.argument.ArgumentTypes;
+import net.minecraft.command.argument.serialize.ArgumentSerializer;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.s2c.play.CommandTreeS2CPacket;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(CommandTreeS2CPacket.class)
+import java.util.Optional;
+
+@Mixin(targets = "net.minecraft.network.packet.s2c.play.CommandTreeS2CPacket$ArgumentNode")
 public class CommandTreeSerializationMixin {
-    private static final Identifier MOD_ARGUMENT_INDICATOR = new Identifier("crossstitch:mod_argument");
+    @Shadow @Final private ArgumentSerializer.ArgumentTypeProperties<?> properties;
+    private static final int MOD_ARGUMENT_INDICATOR = -256;
 
-    @Redirect(method = "writeNode", at = @At(value = "INVOKE", target = "Lnet/minecraft/command/argument/ArgumentTypes;toPacket(Lnet/minecraft/network/PacketByteBuf;Lcom/mojang/brigadier/arguments/ArgumentType;)V"))
-    private static void writeNode$wrapInVelocityModArgument(PacketByteBuf packetByteBuf, ArgumentType<?> type) {
-        ArgumentTypes.Entry entry = ArgumentTypes.classMap.get(type.getClass());
-        if (entry == null) {
-            packetByteBuf.writeIdentifier(new Identifier(""));
+    @Inject(method = "write(Lnet/minecraft/network/PacketByteBuf;Lnet/minecraft/command/argument/serialize/ArgumentSerializer;Lnet/minecraft/command/argument/serialize/ArgumentSerializer$ArgumentTypeProperties;)V",
+            at = @At("HEAD"), cancellable = true)
+    private static <A extends ArgumentType<?>, T extends ArgumentSerializer.ArgumentTypeProperties<A>> void writeNode$wrapInVelocityModArgument(PacketByteBuf buf, ArgumentSerializer<A, T> serializer, ArgumentSerializer.ArgumentTypeProperties<A> properties, CallbackInfo ci) {
+        Optional<RegistryKey<ArgumentSerializer<?, ?>>> entry = Registry.COMMAND_ARGUMENT_TYPE.getKey(serializer);
+
+        if (entry.isEmpty()) {
             return;
         }
-        if (entry.id.getNamespace().equals("minecraft") || entry.id.getNamespace().equals("brigadier")) {
-            packetByteBuf.writeIdentifier(entry.id);
-            entry.serializer.toPacket(type, packetByteBuf);
-            return;
+        RegistryKey<ArgumentSerializer<?, ?>> keyed = entry.get();
+
+        if (keyed.getValue().getNamespace().equals("minecraft") || keyed.getValue().getNamespace().equals("brigadier")) {
+           return;
         }
+        ci.cancel();
 
         // Not a standard Minecraft argument type - so we need to wrap it
-        serializeWrappedArgumentType(packetByteBuf, type, entry);
+        serializeWrappedArgumentType(buf, serializer, properties);
     }
 
-    private static void serializeWrappedArgumentType(PacketByteBuf packetByteBuf, ArgumentType argumentType, ArgumentTypes.Entry entry) {
-        packetByteBuf.writeIdentifier(MOD_ARGUMENT_INDICATOR);
-
-        packetByteBuf.writeIdentifier(entry.id);
+    private static <A extends ArgumentType<?>, T extends ArgumentSerializer.ArgumentTypeProperties<A>> void serializeWrappedArgumentType(PacketByteBuf packetByteBuf, ArgumentSerializer<A, T> serializer, ArgumentSerializer.ArgumentTypeProperties<A> properties) {
+        packetByteBuf.writeVarInt(MOD_ARGUMENT_INDICATOR);
+        packetByteBuf.writeVarInt(Registry.COMMAND_ARGUMENT_TYPE.getRawId(serializer));
 
         PacketByteBuf extraData = new PacketByteBuf(Unpooled.buffer());
-        entry.serializer.toPacket(argumentType, extraData);
+        serializer.writePacket((T) properties, extraData);
 
         packetByteBuf.writeVarInt(extraData.readableBytes());
         packetByteBuf.writeBytes(extraData);
